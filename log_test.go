@@ -8,10 +8,15 @@ import (
 type EmptyStruct struct {
 
 }
+
+type StringStruct struct {
+	Str string
+}
 type TestStruct struct {
 	Id int
 	Name string
-	Map map[string][]float64
+	FloatMap map[string][]float64
+	StringMap map[int]StringStruct
 	EmptyStruct EmptyStruct
 	Address *string
 	Reserver interface{}
@@ -27,9 +32,13 @@ func TestLog(t *testing.T) {
 	tempData := TestStruct{
 		Id:       12,
 		Name:     "tempData",
-		Map: 	map[string][]float64{
-			"test1":[]float64{12.3, 33.0},
-			"test2":[]float64{88.456, 78.12},
+		FloatMap: 	map[string][]float64{
+			"test1":{12.3, 33.0},
+			"test2":{88.456, 78.12},
+		},
+		StringMap: map[int]StringStruct{
+			1:{Str: "hello"},
+			2:{Str: "world"} ,
 		},
 		EmptyStruct : EmptyStruct{},
 		Address:  &tempString,

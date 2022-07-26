@@ -141,82 +141,18 @@ func display(path string, v reflect.Value, lines *[]string, base string, end boo
 			for index, _key := range v.MapKeys() {
 				key := _key.Convert(res.Type().Key())
 				value := v.MapIndex(_key)
-				if key.Kind() == reflect.Struct || key.Kind() == reflect.Slice || key.Kind() == reflect.Array || key.Kind() == reflect.Map {
-					display("[MapKey] "+formatAtom(key), key, lines, base+bodyIndent(end), false)
-					if value.Kind() == reflect.Interface {
-						if value.IsNil() {
-							display("[MapValue] [Interface] "+formatAtom(value), value, lines, base+bodyIndent(end), index == v.Len()-1)
-						} else {
-							display("[MapValue] [Interface] "+formatAtom(value), value.Elem(), lines, base+bodyIndent(end), index == v.Len()-1)
-						}
-					} else if value.Kind() == reflect.Ptr {
-						if value.IsNil() {
-							display("[MapValue] [Ptr] "+formatAtom(value), value, lines, base+bodyIndent(end), index == v.Len()-1)
-						} else {
-							display("[MapValue] [Ptr] "+formatAtom(value), value.Elem(), lines, base+bodyIndent(end), index == v.Len()-1)
-						}
-					} else {
-						display("[MapValue] "+formatAtom(value), value, lines, base+bodyIndent(end), index == v.Len()-1)
-					}
-				} else if key.Kind() == reflect.Interface {
-					if key.IsNil() {
-						display("[MapKey] [Interface] "+formatAtom(key), key, lines, base+bodyIndent(end), false)
-					} else {
-						display("[MapKey] [Interface] "+formatAtom(key), key.Elem(), lines, base+bodyIndent(end), false)
-					}
-
-					if value.Kind() == reflect.Interface {
-						if value.IsNil() {
-							display("[MapValue] [Interface] "+formatAtom(value), value, lines, base+bodyIndent(end), index == v.Len()-1)
-						} else {
-							display("[MapValue] [Interface] "+formatAtom(value), value.Elem(), lines, base+bodyIndent(end), index == v.Len()-1)
-						}
-					} else if value.Kind() == reflect.Ptr {
-						if value.IsNil() {
-							display("[MapValue] [Ptr] "+formatAtom(value), value, lines, base+bodyIndent(end), index == v.Len()-1)
-						} else {
-							display("[MapValue] [Ptr] "+formatAtom(value), value.Elem(), lines, base+bodyIndent(end), index == v.Len()-1)
-						}
-					} else {
-						display("[MapValue] "+formatAtom(value), value, lines, base+bodyIndent(end), index == v.Len()-1)
-					}
-				} else if key.Kind() == reflect.Ptr {
-					if key.IsNil() {
-						display("[MapKey] [Ptr] "+formatAtom(key), key, lines, base+bodyIndent(end), false)
-					} else {
-						display("[MapKey] [Ptr] "+formatAtom(key), key.Elem(), lines, base+bodyIndent(end), false)
-					}
-
-					if value.Kind() == reflect.Interface {
-						if value.IsNil() {
-							display("[MapValue] [Interface] "+formatAtom(value), value, lines, base+bodyIndent(end), index == v.Len()-1)
-						} else {
-							display("[MapValue] [Interface] "+formatAtom(value), value.Elem(), lines, base+bodyIndent(end), index == v.Len()-1)
-						}
-					} else if value.Kind() == reflect.Ptr {
-						if value.IsNil() {
-							display("[MapValue] [Ptr] "+formatAtom(value), value, lines, base+bodyIndent(end), index == v.Len()-1)
-						} else {
-							display("[MapValue] [Ptr] "+formatAtom(value), value.Elem(), lines, base+bodyIndent(end), index == v.Len()-1)
-						}
-					} else {
-						display("[MapValue] "+formatAtom(value), value, lines, base+bodyIndent(end), index == v.Len()-1)
-					}
+				if key.Kind() != reflect.Struct && key.Kind() != reflect.Slice && key.Kind() != reflect.Array && key.Kind() != reflect.Map &&  key.Kind() != reflect.Interface &&  key.Kind() != reflect.Ptr {
+					display(formatAtom(key), value, lines, base+bodyIndent(end), index == v.Len()-1)
 				} else {
-					if value.Kind() == reflect.Interface {
-						if value.IsNil() {
-							display("[Interface] "+formatAtom(value), value, lines, base+bodyIndent(end), index == v.Len()-1)
-						} else {
-							display("[Interface] "+formatAtom(value), value.Elem(), lines, base+bodyIndent(end), index == v.Len()-1)
-						}
-					} else if value.Kind() == reflect.Ptr {
-						if value.IsNil() {
-							display("[Ptr] "+formatAtom(value), value, lines, base+bodyIndent(end), index == v.Len()-1)
-						} else {
-							display("[Ptr] "+formatAtom(value), value.Elem(), lines, base+bodyIndent(end), index == v.Len()-1)
-						}
+					if key.IsNil() {
+						display("[MapKey]"+formatAtom(key), key, lines, base+bodyIndent(end), false)
 					} else {
-						display(formatAtom(key), value, lines, base+bodyIndent(end), index == v.Len()-1)
+						display("[MapKey]"+formatAtom(key), key.Elem(), lines, base+bodyIndent(end), false)
+					}
+					if value.IsNil() {
+						display("[MapValue]"+formatAtom(value), value, lines, base+bodyIndent(end), index == v.Len()-1)
+					} else {
+						display("[MapValue]"+formatAtom(value), value.Elem(), lines, base+bodyIndent(end), index == v.Len()-1)
 					}
 				}
 			}
@@ -226,9 +162,6 @@ func display(path string, v reflect.Value, lines *[]string, base string, end boo
 			tmpString := fmt.Sprintf("%s = nil [Ptr: %s]", base+headIndent(end)+path, v.Type().Elem().Name())
 			*lines = append(*lines, tmpString)
 		} else {
-			// tmpString := fmt.Sprintf("%s.type = %s [Ptr]", base+headIndent(end)+path, v.Elem().Type())
-			// *lines = append(*lines, tmpString)
-
 			display(fmt.Sprintf("(*%s)", path), v.Elem(), lines, base+bodyIndent(end), true)
 		}
 	case reflect.Interface:
